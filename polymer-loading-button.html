@@ -1,0 +1,323 @@
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="bower_components/paper-button/paper-button.html">
+<link rel="import" href="bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="bower_components/neon-animation/neon-animations.html">
+<link rel="import" href="bower_components/neon-animation/neon-animatable-behavior.html">
+<link rel="import" href="bower_components/neon-animation/neon-animated-pages.html">
+<link rel="import" href="bower_components/neon-animation/neon-shared-element-animation-behavior.html">
+
+<!--
+`polymer-loading-button`
+A polymer button with hero animation between button and spinner
+
+@demo demo/index.html 
+-->
+
+
+<dom-module id="polymer-loading-button">
+    <template>
+        <style>
+            :host {
+                display: block;
+                position: relative;
+            }
+
+            paper-spinner, iron-icon {
+                /*display: none;*/
+            }
+
+            neon-animated-pages{
+                min-height: 40px;
+                overflow: hidden;
+                text-align: center;
+            }
+        </style>
+
+        <iron-ajax
+                id="xhr"
+                url="[[url]]"
+                params='[[params]]'
+                handle-as="json"
+                on-response="_responseHandler"
+                on-error="_errorHandler"
+                headers="[[requestHeaders]]"
+                debounce-duration="300"></iron-ajax>
+
+        <neon-animated-pages selected="[[selected]]" entry-animation="scale-up-animation" exit-animation="scale-down-animation">
+            <plb-animated-button id="plb-button" on-click="generateRequest" raised="[[raised]]" button-label="[[buttonLabel]]"></plb-animated-button>
+
+            <plb-animated-spinner waiting-message="[[waitinMessage]]" id="plb-spinner"></plb-animated-spinner>
+
+            <plb-animated-icon icon="icons:check" id="plb-success-icon"></plb-animated-icon>
+            <plb-animated-icon icon="icons:clear" id="plb-error-icon"></plb-animated-icon>
+
+        </neon-animated-pages>
+
+
+    </template>
+
+    <script>
+
+        function isFunction(functionToCheck) {
+            var getType = {};
+            return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
+        }
+
+
+        Polymer({
+
+            is: 'polymer-loading-button',
+
+            properties: {
+
+                selected: {
+                    type: Number,
+                    value: 0,
+                },
+
+                delay: {
+                    type: Number,
+                    value: 0
+                },
+
+                buttonLabel: {
+                    type: String,
+                    value: null
+                },
+                raised: {
+                    type: Boolean,
+                    value: false
+                },
+                waitingMessage: {
+                    type: String,
+                    value: 'Loading'
+                },
+                url: {
+                    type: String,
+                    value: null
+                },
+                params: {
+                    type: Object,
+                    value: null
+                },
+                responseHandler: {
+                    type: Function,
+                    value: null
+                },
+                requestHeaders: {
+                    type: Object,
+                    value: null
+                }
+            },
+            generateRequest: function (ev) {
+                ev.preventDefault();
+
+                this.$['plb-button'].disabled = true;
+                this.selected = 1;
+
+                this.$.xhr.generateRequest();
+            },
+            _responseHandler: function (ev, ironRequest) {
+                console.info(arguments);
+                this.$['plb-button'].disabled = false;
+                var self = this;
+                if(this.delay) {
+
+                    setTimeout(function() {
+                        self.selected = 2;
+                    }, this.delay);
+
+                }
+
+                if (isFunction(this.responseHandler)) {
+                    this.responsehandler(ironRequest.parseResponse());
+                }
+            },
+            _errorHandler: function (ev, ironRequest) {
+                console.error(arguments);
+                this.$['plb-button'].disabled = false;
+                var self = this;
+                if(this.delay) {
+
+                    setTimeout(function() {
+                        self.selected = 2;
+                    }, this.delay);
+
+                }
+
+                if (isFunction(this.responseHandler)) {
+                    this.errorHandler(arguments);
+                }
+            }
+
+        });
+
+
+    </script>
+</dom-module>
+
+<dom-module id="plb-animated-button">
+    <template>
+
+        <paper-button id="plbab-button" raised="[[raised]]">[[buttonLabel]]</paper-button>
+
+    </template>
+    <script>
+        Polymer({
+            is: 'plb-animated-button',
+            behaviors: [
+                Polymer.NeonAnimatableBehavior
+            ],
+            ready: function () {
+                if (this.raised == false) {
+                    this.$['plbab-button'].removeAttribute('raised');
+                }
+
+            },
+            properties: {
+                buttonLabel: {
+                    type: String,
+                    value: null
+                },
+                raised: {
+                    type: Boolean,
+                    value: false
+                },
+                clickHandler: {
+                    type: Function,
+                    value: null
+                },
+//                animationConfig: {
+//                    value: function () {
+//                        return {
+//                            // the incoming page defines the 'entry' animation
+//                            'exit': [/*{
+//                                name: 'fade-out-animation',
+//                                fromPage: this
+//                            }, */{
+////                                name: 'scale-down-animation',
+//                                animation: 'transform-animation',
+//                                transformFrom: 'scale(0)',
+//                                fromPage: this
+////                                id: 'hero',
+////                                fromPage: this,
+////                                timing: {delay: 50}
+//                            }],
+//                            'entry': [ {
+//                                name: 'scale-up-animation',
+////                                id: 'hero',
+//                                toPage: this
+//                            }]
+//                        }
+//                    }
+//                },
+//                sharedElements: {
+//                    value: function() {
+//                        return {
+//                            'hero': this.$['plbab-button']
+//                        }
+//                    }
+//                }
+            }
+        });
+    </script>
+
+</dom-module>
+
+<dom-module id="plb-animated-spinner">
+    <template>
+        <paper-spinner alt="[[waitingMessage]]" id="plbab-spinner" active></paper-spinner>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'plb-animated-spinner',
+            behaviors: [
+                Polymer.NeonAnimatableBehavior
+            ],
+
+            properties: {
+                waitingMessage: {
+                    type: String,
+                    value: null
+                },
+//                animationConfig: {
+//                    value: function () {
+//                        return {
+//                            // the incoming page defines the 'entry' animation
+//                            'exit': [ {
+//                                name: 'hero-animation',
+//                                id: 'hero',
+//                                fromPage: this
+//                            }],
+//                            'entry': [ {name: 'scale-up-animation', toPage: this},
+//                                {
+//                                name: 'hero-animation',
+//                                id: 'hero',
+//                                toPage: this,
+//                                timing: {delay: 50}
+//                            }
+//                            ]
+//                        }
+//                    }
+//                },
+//                sharedElements: {
+//                    value: function() {
+//                        return {
+//                            'hero': this.$['plbab-spinner']
+//                        }
+//                    }
+//                }
+            }
+
+        });
+    </script>
+</dom-module>
+
+<dom-module id="plb-animated-icon">
+    <template>
+        <iron-icon icon="[[icon]]" id="plbab-icon"></iron-icon>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'plb-animated-icon',
+            behaviors: [
+                Polymer.NeonAnimatableBehavior
+            ],
+
+            properties: {
+                icon: {
+                    type: String,
+                    value: null
+                },
+//                animationConfig: {
+//                    value: function () {
+//                        return {
+//                            // the incoming page defines the 'entry' animation
+//                            'exit': [ {
+//                                name: 'hero-animation',
+//                                id: 'hero',
+//                                fromPage: this
+//                            }],
+//                            'entry': [ {
+//                                name: 'hero-animation',
+//                                id: 'hero',
+//                                toPage: this
+//                            }]
+//                        }
+//                    }
+//                },
+//                sharedElements: {
+//                    value: function() {
+//                        return {
+//                            'hero': this.$['plbab-icon']
+//                        }
+//                    }
+//                }
+            }
+        });
+    </script>
+</dom-module>
