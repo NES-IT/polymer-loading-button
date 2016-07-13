@@ -1,0 +1,27 @@
+{
+  "name": "polymer-loading-button",
+  "description": "A polymer button with hero animation between button and spinner",
+  "main": "polymer-loading-button.html",
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.4.0",
+    "paper-spinner": "PolymerElements/paper-spinner#^1.2.0",
+    "neon-animation": "PolymerElements/neon-animation#^1.2.3"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.0.0",
+    "web-component-tester": "^4.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
+  },
+  "homepage": "https://github.com/NewEasySoft/polymer-loading-button",
+  "_release": "af982367c2",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "af982367c2e52e497ac317ca43faf6aa5e90c765"
+  },
+  "_source": "git://github.com/NewEasySoft/polymer-loading-button.git",
+  "_target": "master",
+  "_originalSource": "NewEasySoft/polymer-loading-button",
+  "_direct": true
+}
