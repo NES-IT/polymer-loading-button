@@ -1,8 +1,8 @@
 # \<polymer-loading-button\>
 
-A polymer elements that aggregates [iron-ajax]() and [paper-button], morphing the paper-button to a [paper-spinner]() during the request and to a [iron-icon]() when the request complets.
+A polymer elements that aggregates [iron-ajax](https://github.com/PolymerElements/iron-ajax) and [paper-button](https://github.com/PolymerElements/paper-button), morphing the paper-button to a [paper-spinner](https://github.com/PolymerElements/paper-spinner) during the request and to a [iron-icon](https://github.com/PolymerElements/iron-icons) when the request completes.
 
-Check out the [demo]()
+Check out the [demo](https://neweasysoft.github.io/polymer-loading-button/) or see the [API reference](https://neweasysoft.github.io/polymer-loading-button/)
 
 ## Install the Polymer-CLI
 
