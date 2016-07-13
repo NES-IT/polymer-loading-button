@@ -1,6 +1,8 @@
 # \<polymer-loading-button\>
 
-A polymer button with hero animation between button and spinner
+A polymer elements that aggregates [iron-ajax]() and [paper-button], morphing the paper-button to a [paper-spinner]() during the request and to a [iron-icon]() when the request complets.
+
+Check out the [demo]()
 
 ## Install the Polymer-CLI
 
